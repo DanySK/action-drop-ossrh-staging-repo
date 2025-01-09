@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/DanySK/action-drop-ossrh-staging-repo/compare/1.0.0...1.0.1) (2025-01-09)
+
+### Documentation
+
+* fix readme ([57c94eb](https://github.com/DanySK/action-drop-ossrh-staging-repo/commit/57c94eb1dcb0b627b946f3ddfca3b668e1ac8403))
+
 ## 1.0.0 (2025-01-09)
 
 ### Features
