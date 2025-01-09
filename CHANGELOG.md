@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/DanySK/action-drop-ossrh-staging-repo/compare/1.0.1...1.0.2) (2025-01-09)
+
+### Documentation
+
+* remove wrong instructions from the readme ([b36c37e](https://github.com/DanySK/action-drop-ossrh-staging-repo/commit/b36c37ec35df23a9456b55540df21700c06d5f31))
+
 ## [1.0.1](https://github.com/DanySK/action-drop-ossrh-staging-repo/compare/1.0.0...1.0.1) (2025-01-09)
 
 ### Documentation
