@@ -21,12 +21,14 @@ jobs:
           group-id: "org.danilopianini"
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      - shell: bash
+        run: '[ -z "${{ steps.create-staging-repo.outputs.staging-repo-id }}" ] && exit 1 || echo "OK"'
       - name: Check out code
         uses: actions/checkout@v4.2.2
       - name: Drop staging repository
         uses: ./
         with:
-          repo-id: ${{ steps.create-staging-repo.staging-repo-id }}
+          repo-id: ${{ steps.create-staging-repo.outputs.staging-repo-id }}
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Install Node
