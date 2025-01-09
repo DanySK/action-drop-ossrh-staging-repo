@@ -2,6 +2,12 @@
 
 ### Features
 
+* write the action ([f75d5c9](https://github.com/DanySK/action-drop-ossrh-staging-repo/commit/f75d5c991d33d988e3f73218fac3ad2b2dce512d))
+
+## 1.0.0 (2025-01-09)
+
+### Features
+
 * write the action ([77987e8](https://github.com/DanySK/action-create-ossrh-staging-repo/commit/77987e8c1a6c41211ae9ed9cc34aa826a44ca3b2))
 
 ### Bug Fixes
