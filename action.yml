@@ -1,0 +1,72 @@
+name: "Create Staging Repository on Maven Central OSSRH"
+description: "Creates a Sonatype staging repository on Maven Central."
+
+branding:
+  icon: "database"
+  color: "purple"
+
+inputs:
+  group-id:
+    description: "The groupId to be used for the staging repository."
+    required: true
+  maven-central-username:
+    description: "Sonatype Username for Maven Central."
+    required: true
+  maven-central-password:
+    description: "Sonatype Password for Maven Central."
+    required: true
+
+# Define the outputs
+outputs:
+  staging-repo-id:
+    description: "The ID of the newly created staging repository."
+    value: ${{ steps.create-staging-repo.outputs.staging-repo-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Create a staging repository"
+      shell: bash
+      id: create-staging-repo
+      env:
+        GROUP_ID: ${{ inputs.group-id }}
+        MAVEN_CENTRAL_USERNAME: ${{ inputs.maven-central-username }}
+        MAVEN_CENTRAL_PASSWORD: ${{ inputs.maven-central-password }}
+      run: |
+        # Define the API URL and request payload
+        NEXUS_URL="https://s01.oss.sonatype.org/service/local/staging/profiles"
+        CREDENTIALS="${MAVEN_CENTRAL_USERNAME}:${MAVEN_CENTRAL_PASSWORD}"
+        PAYLOAD="{\"data\":{\"description\":\"Staging repository for $GROUP_ID\"}}"
+
+        echo "::debug::Fetching available staging profiles..."
+        # Fetch the profile ID for the group ID
+        RESPONSE=$(curl -u "$CREDENTIALS" -s "$NEXUS_URL" -H "Accept: application/json")
+        echo "::debug::Response:"
+        echo "::debug::$RESPONSE"
+        PROFILE_ID=$(echo "$RESPONSE" | jq -r --arg GROUP_ID "$GROUP_ID" '.data[] | select(.name == $GROUP_ID) | .id')
+        if [[ -z "$PROFILE_ID" ]]; then
+          echo "Failed to fetch profile ID for group ID $GROUP_ID."
+          exit 1
+        fi
+        echo "::debug::Found profile ID $PROFILE_ID"
+
+        echo "::debug::Creating staging repository..."
+        # Open a new staging repository
+        RESPONSE=$(curl -u "$CREDENTIALS" \
+          -X POST \
+          -H "Content-Type: application/json" \
+          -H "Accept: application/json" \
+          -d "$PAYLOAD" \
+          -s "$NEXUS_URL/$PROFILE_ID/start")
+        echo "::debug::Response:"
+        echo "::debug::$RESPONSE"
+        # Extract the staging repository name
+        STAGING_REPO_NAME=$(echo "$RESPONSE" | jq -r '.data.stagedRepositoryId')
+        if [[ -z "$STAGING_REPO_NAME" ]]; then
+          echo "Failed to create a staging repository."
+          exit 1
+        fi
+
+        echo "Staging repository created: $STAGING_REPO_NAME"
+        # Set the output
+        echo "staging-repo-id=$STAGING_REPO_NAME" >> $GITHUB_OUTPUT
