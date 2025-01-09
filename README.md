@@ -24,7 +24,6 @@ This GitHub Action drops a Sonatype staging repository on Maven Central using th
 ## Example Usage
 
 Below is an example of how you might call this action in a workflow.  
-Save it in your repository as `.github/actions/drop-staging-repo/action.yml`, or wherever you keep custom actions:
 
 ```yaml
 name: "Drop a Staging Repository"
