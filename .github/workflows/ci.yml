@@ -1,6 +1,7 @@
 name: CI/CD
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - '**'  # Run on all branches
@@ -14,26 +15,20 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4.2.2
-      - name: Create staging repository
+      - uses: danysk/action-create-ossrh-staging-repo@1.0.0
         id: create-staging-repo
-        uses: ./
         with:
-          group-id: org.danilopianini
+          group-id: "org.danilopianini"
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      - name: Check out code
+        uses: actions/checkout@v4.2.2
       - name: Drop staging repository
-        shell: bash
-        run: |
-          echo "::debug::Dropping staging repo: ${{ steps.create-staging-repo.outputs.staging-repo-id }}"
-          curl \
-            --request POST \
-            --url "https://s01.oss.sonatype.org/service/local/staging/bulk/drop" \
-            --header "Accept: application/json" \
-            --header "Content-Type: application/json" \
-            --data '{"data":{"stagedRepositoryIds":["'${{ steps.create-staging-repo.outputs.staging-repo-id }}'"]}}' \
-            --user "${{ secrets.MAVEN_CENTRAL_USERNAME }}:${{ secrets.MAVEN_CENTRAL_PASSWORD }}" \
+        uses: ./
+        with:
+          repo-id: ${{ steps.create-staging-repo.staging-repo-id }}
+          maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Install Node
         uses: actions/setup-node@v4.1.0
         if: runner.os == 'linux'

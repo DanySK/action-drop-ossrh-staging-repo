@@ -1,76 +1,48 @@
-# Create OSSRH Staging Repository GitHub Action
+# Drop Staging Repository on Maven Central OSSRH
 
-![Action: Create Staging Repository](https://img.shields.io/badge/Action-Create%20Staging%20Repository-blueviolet?logo=github)
+This GitHub Action drops a Sonatype staging repository on Maven Central using the [Nexus REST API](https://s01.oss.sonatype.org).
 
-This composite action creates a **Sonatype staging repository** on Maven Central so you can deploy your artifacts. It finds the appropriate profile ID based on your `groupId`, then opens a new staging repository using Sonatype’s Nexus REST API.
+## Contents
 
-## Table of Contents
-
-- [Features](#features)
 - [Inputs](#inputs)
-- [Outputs](#outputs)
-- [Usage](#usage)
-- [Example](#example)
-- [Contributing](#contributing)
+- [Example Usage](#example-usage)
+- [How It Works](#how-it-works)
 - [License](#license)
-
----
-
-## Features
-
-- **Automated profile lookup**: Uses your `groupId` to dynamically retrieve the Sonatype staging profile ID.
-- **Opens a staging repository**: Creates a new staging repository for Maven Central deployments.
-- **Easy integration**: Drop into any workflow to simplify the Maven Central release process.
-- **Secure credentials handling**: Expects credentials to be set as GitHub Actions secrets.
 
 ---
 
 ## Inputs
 
-| Name                      | Description                                                     | Required | Default                |
-|---------------------------|-----------------------------------------------------------------|----------|------------------------|
-| `group-id`               | The groupId used for the staging repository                     | false    | `org.danilopianini`    |
-| `maven-central-username` | Sonatype Username for Maven Central                             | true     | —                      |
-| `maven-central-password` | Sonatype Password for Maven Central                             | true     | —                      |
+| Name                      | Description                                   | Required | Default |
+|---------------------------|-----------------------------------------------|----------|---------|
+| `repo-id`                | The staging repository ID to drop.            | **Yes**  |         |
+| `maven-central-username` | Sonatype Username for Maven Central.          | **Yes**  |         |
+| `maven-central-password` | Sonatype Password for Maven Central.          | **Yes**  |         |
 
 ---
 
-## Outputs
+## Example Usage
 
-| Name               | Description                                         |
-|--------------------|-----------------------------------------------------|
-| `staging-repo-id` | The ID of the newly created staging repository.      |
-
----
-
-## Usage
-
-1. **Add the composite action to your repository**:  
-   Create a folder (if it does not exist yet) at `.github/actions/create-staging-repo/` and add the action files, including `action.yml`.
-
-2. **Reference the action in your workflows**:  
-   In a job that needs to create a staging repository, add a step like this:
+Below is an example of how you might call this action in a workflow.  
+Save it in your repository as `.github/actions/drop-staging-repo/action.yml`, or wherever you keep custom actions:
 
 ```yaml
+name: "Drop a Staging Repository"
+
+on:
+  workflow_dispatch:
+
 jobs:
-  staging-repo:
-    runs-on: ubuntu-24.04
+  drop-staging-repo:
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Create Staging Repository
-        id: create-staging-repo
-        uses: ./.github/actions/create-staging-repo
+      - name: Drop a staging repo
+        uses: ./.github/actions/drop-staging-repo
         with:
-          group-id: "org.danilopianini"
+          repo-id: "my.example.repo-1001"
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-
-      - name: Use staging repo ID
-        run: |
-          echo "New staging repository ID is: ${{ steps.create-staging-repo.outputs.staging-repo-id }}"
 ```
-
-3. **Consume the staging-repo-id**:
-Use the output in subsequent steps to perform tasks like uploading artifacts, closing, or releasing the repository.
