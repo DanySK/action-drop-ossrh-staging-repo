@@ -23,14 +23,13 @@ runs:
       shell: bash
       env:
         NEXUS_URL: https://s01.oss.sonatype.org/service/local/staging/profiles
-        REPO_ID: ${{ inputs.repo-id }}
         CREDENTIALS: ${{ inputs.maven-central-username }}:${{ inputs.maven-central-password }}
       run: |
-        echo "::debug::Dropping staging repo: $REPO_ID"
+        echo "::debug::Dropping staging repo: ${{ inputs.repo-id }}"
         curl \
           --request POST \
           --url "https://s01.oss.sonatype.org/service/local/staging/bulk/drop" \
           --header "Accept: application/json" \
           --header "Content-Type: application/json" \
-          --data '{"data":{"stagedRepositoryIds":["'$REPO_ID'"]}}' \
+          --data '{"data":{"stagedRepositoryIds":["'${{ inputs.repo-id }}'"]}}' \
           --user "$CREDENTIALS"
