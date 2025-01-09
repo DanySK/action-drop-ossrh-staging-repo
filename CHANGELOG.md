@@ -1,3 +1,9 @@
+## [1.0.3](https://github.com/DanySK/action-drop-ossrh-staging-repo/compare/1.0.2...1.0.3) (2025-01-09)
+
+### Bug Fixes
+
+* use the input repo-id directly ([c28d07b](https://github.com/DanySK/action-drop-ossrh-staging-repo/commit/c28d07b41c9e78685e83195e96c03c7b9773b7de))
+
 ## [1.0.2](https://github.com/DanySK/action-drop-ossrh-staging-repo/compare/1.0.1...1.0.2) (2025-01-09)
 
 ### Documentation
