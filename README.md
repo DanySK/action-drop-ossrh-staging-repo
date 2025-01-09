@@ -33,16 +33,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  drop-staging-repo:
-    runs-on: ubuntu-latest
+  staging-repo:
+    runs-on: ubuntu-24.04
+    outputs:
+      staging-repo-id: ${{ steps.create-staging-repo.outputs.staging-repo-id }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Drop a staging repo
-        uses: ./.github/actions/drop-staging-repo
+      - id: create-staging-repo
+        name: Create a staging repository
+        uses: danysk/action-create-ossrh-staging-repo@1.0.0
         with:
-          repo-id: "my.example.repo-1001"
+          group-id: "org.danilopianini"
+          maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+  drop-staging-repo:
+    needs: staging-repo
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Drop a staging repository
+        uses: danysk/action-drop-ossrh-staging-repo@1.0.0
+        with:
+          repo-id: ${{ needs.staging-repo.outputs.staging-repo-id }}
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
 ```
