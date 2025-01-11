@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: danysk/action-create-ossrh-staging-repo@1.0.0
+      - uses: danysk/action-create-ossrh-staging-repo@1.0.1
         id: create-staging-repo
         with:
           group-id: "org.danilopianini"
