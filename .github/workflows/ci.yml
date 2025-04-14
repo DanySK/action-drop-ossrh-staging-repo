@@ -32,7 +32,7 @@ jobs:
           maven-central-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Install Node
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         if: runner.os == 'linux'
         with:
           node-version-file: package.json
