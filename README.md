@@ -1,3 +1,7 @@
+## IMPORTANT NOTICE
+
+> Since Maven Central OSSRH has been sunsetted, this action is no longer maintained.
+
 # Drop Staging Repository on Maven Central OSSRH
 
 This GitHub Action drops a Sonatype staging repository on Maven Central using the [Nexus REST API](https://s01.oss.sonatype.org).
